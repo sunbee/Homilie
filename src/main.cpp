@@ -76,22 +76,23 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
   _signal = _deserializer.deserialize(message2display, length);
+  u8x8.clearDisplay();
+  u8x8.setFont(u8x8_font_pxplusibmcga_f); 
+  u8x8.drawString(0, 0, "FLOOD @ I-55");
   if (_signal.Hi == 1) {
-    u8x8.clearDisplay();
-    u8x8.drawString(0, 0, "LOC: FLL TEST");
-    u8x8.drawString(0, 2, "ALERT: HIGH");
+    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
+    u8x8.drawString(0, 2, "DO NOT");
+    u8x8.drawString(0, 4, "PASS!");
   } else if (_signal.Me == 1) {
-    u8x8.clearDisplay();
-    u8x8.drawString(0, 0, "LOC: FLL TEST");
-    u8x8.drawString(0, 2, "ALERT: MEDIUM!");
+    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
+    u8x8.drawString(0, 2, "DANGER!");
   } else if (_signal.Lo == 1) {
-    u8x8.clearDisplay();
-    u8x8.drawString(0, 0, "LOC: FLL TEST");
-    u8x8.drawString(0, 2, "ALERT: LOW!");
+    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
+    u8x8.drawString(0, 2, "CAUTION!");
   } else {
-    u8x8.clearDisplay();
-    u8x8.drawString(0, 0, "LOC: FLL TEST");
-    u8x8.drawString(0, 3, "ALL CLEAR!");
+    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
+    u8x8.drawString(0, 2, "ALL");
+    u8x8.drawString(0, 4, "OKAY!");
   }
 }
 
