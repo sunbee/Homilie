@@ -2,18 +2,18 @@
 Copyright of Sanjay Bhatikar
 */
 
-#include "LED.h"
+#include "Light.h"
 
-LED::LED(int pin_no) {
+Light::Light(int pin_no) {
     this->_pin = pin_no;
     pinMode(this->_pin, OUTPUT);
 }
 
-void LED::set_level(bool level) {
+void Light::set_level(bool level) {
     digitalWrite(this->_pin, HIGH);
     this->_level = true;
 }
 
-bool LED::get_level() {
+bool Light::get_level() {
     return this->_level;
 }

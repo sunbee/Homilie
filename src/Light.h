@@ -7,10 +7,10 @@ Copyright of Sanjay Bhatikar
 #include <Arduino.h>
 #include "Pins.h"
 
-class LED
+class Light
 {
     public:
-        LED(int);
+        Light(int);
         void set_level(bool=false);
         bool get_level();
     private:

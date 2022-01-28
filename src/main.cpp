@@ -26,10 +26,10 @@ bool isLevelHi = false;
 
 #include "Buzzer.h"
 
-/* ERROR! Multiple instances detected at compile-time.
-#include "OLED.h"
-OLED _oled = OLED();
-*/
+#include "Light.h"
+Light _Lo = Light(PIN_LED_LO);
+Light _Me = Light(PIN_LED_ME);
+Light _Hi = Light(PIN_LED_HI);
 
 #include <U8x8lib.h>
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(SCL, SDA, U8X8_PIN_NONE);
@@ -80,6 +80,7 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   u8x8.setFont(u8x8_font_pxplusibmcga_f); 
   u8x8.drawString(0, 0, "FLOOD @ I-55");
   if (_signal.Hi == 1) {
+    _Lo.set_level(true);
     u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
     u8x8.drawString(0, 2, "DO NOT");
     u8x8.drawString(0, 4, "PASS!");
