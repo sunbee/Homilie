@@ -1,0 +1,4 @@
+Homilie receives sensor data published to Home Automation hub by sensor nodes and initiates action. The Home Automation hub can local Raspberry on home network or HiveMQ broker in the Cloud. 
+
+rev001: Added OLED display (SSD1306) with U8g2 library to display sensor data.
+rev002: Added LED indicators and (optional) buzzer for light and sound effects.

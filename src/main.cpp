@@ -26,6 +26,14 @@ bool isLevelHi = false;
 
 #include "Buzzer.h"
 
+/*
+#include "OLED.h"
+OLED _oled = OLED();
+*/
+
+#include <U8x8lib.h>
+U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(SCL, SDA, U8X8_PIN_NONE);
+
 unsigned long tic = millis();
 
 WiFiClientSecure HTTPClient;
@@ -68,8 +76,26 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
   _signal = _deserializer.deserialize(message2display, length);
+  if (_signal.Hi == 1) {
+    u8x8.clearDisplay();
+    u8x8.drawString(0, 0, "LOC: FLL TEST");
+    u8x8.drawString(0, 2, "ALERT: HIGH");
+  } else if (_signal.Me == 1) {
+    u8x8.clearDisplay();
+    u8x8.drawString(0, 0, "LOC: FLL TEST");
+    u8x8.drawString(0, 2, "ALERT: MEDIUM!");
+  } else if (_signal.Lo == 1) {
+    u8x8.clearDisplay();
+    u8x8.drawString(0, 0, "LOC: FLL TEST");
+    u8x8.drawString(0, 2, "ALERT: LOW!");
+  } else {
+    u8x8.clearDisplay();
+    u8x8.drawString(0, 0, "LOC: FLL TEST");
+    u8x8.drawString(0, 3, "ALL CLEAR!");
+  }
 }
 
+/*
 String make_message() {
  // Levels
  isLevelLo = _signal.Lo; 
@@ -98,6 +124,7 @@ void publish_message() {
   msg_payload.toCharArray(char_buffer, 128);
   MQTTClient.publish("FLL", char_buffer);
 }
+*/
 
 void reconnect() {
   // Loop until we’re reconnected
@@ -129,6 +156,9 @@ void setup() {
     // Stabilize the serial bus
   }
   delay(600);
+  u8x8.begin();
+  u8x8.setFont(u8x8_font_7x14B_1x2_f);
+  u8x8.drawString(0, 0, "OLED OKAY!");  
 
   // Connect to WiFi:
   WiFi.mode(WIFI_OFF);
