@@ -26,7 +26,7 @@ bool isLevelHi = false;
 
 #include "Buzzer.h"
 
-/*
+/* ERROR! Multiple instances detected at compile-time.
 #include "OLED.h"
 OLED _oled = OLED();
 */
