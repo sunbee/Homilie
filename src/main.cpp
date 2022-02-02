@@ -25,6 +25,7 @@ bool isLevelMe = false;
 bool isLevelHi = false;
 
 #include "Buzzer.h"
+Buzzer _buzz = Buzzer();
 
 #include "Light.h"
 Light _Lo = Light(PIN_LED_LO);
@@ -80,17 +81,29 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   u8x8.setFont(u8x8_font_pxplusibmcga_f); 
   u8x8.drawString(0, 0, "FLOOD @ I-55");
   if (_signal.Hi == 1) {
+    _Hi.set_level(true);
+    _Me.set_level(true);
     _Lo.set_level(true);
+    _buzz.sound_alarm();
     u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
     u8x8.drawString(0, 2, "DO NOT");
     u8x8.drawString(0, 4, "PASS!");
   } else if (_signal.Me == 1) {
+    _Hi.set_level(false);
+    _Me.set_level(true);
+    _Lo.set_level(true);
     u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
     u8x8.drawString(0, 2, "DANGER!");
   } else if (_signal.Lo == 1) {
+    _Hi.set_level(false);
+    _Me.set_level(false);
+    _Lo.set_level(true);
     u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
     u8x8.drawString(0, 2, "CAUTION!");
   } else {
+    _Hi.set_level(false);
+    _Me.set_level(false);
+    _Lo.set_level(false);
     u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
     u8x8.drawString(0, 2, "ALL");
     u8x8.drawString(0, 4, "OKAY!");
@@ -182,6 +195,10 @@ void setup() {
   MQTTClient.setCallback(onmessage);    
 
   pinMode(LED, OUTPUT);
+  Serial.println("Switching LED for 1 sec.");
+  _Hi.set_level(false);
+  _Me.set_level(false);
+  _Lo.set_level(false);
 }
 
 void loop() {

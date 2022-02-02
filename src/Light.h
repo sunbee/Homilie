@@ -15,7 +15,7 @@ class Light
         bool get_level();
     private:
         bool _level;
-        bool _pin;
+        int _pin;
 };
 
 #endif

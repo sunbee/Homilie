@@ -10,8 +10,13 @@ Light::Light(int pin_no) {
 }
 
 void Light::set_level(bool level) {
-    digitalWrite(this->_pin, HIGH);
-    this->_level = true;
+    if (level) {
+        digitalWrite(this->_pin, HIGH);
+        this->_level = true;
+    } else {
+        digitalWrite(this->_pin, LOW);
+        this->_level = false;
+    }
 }
 
 bool Light::get_level() {
