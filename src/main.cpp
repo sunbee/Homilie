@@ -20,20 +20,21 @@ int LED = 16;
 Payload _signal;
 Deserializer _deserializer = Deserializer();
 
-bool isLevelLo = false;
-bool isLevelMe = false;
-bool isLevelHi = false;
+#include <TFT_eSPI.h>
+#include <SPI.h>
+#include "Free_Fonts.h"
 
-#include "Buzzer.h"
-Buzzer _buzz = Buzzer();
+TFT_eSPI _tft = TFT_eSPI();
+#define TFT_GREY 0x5AEB;
+int rotatn = 0;
+int xpos = 0;
+int ypos = 40;
 
-#include "Light.h"
-Light _Lo = Light(PIN_LED_LO);
-Light _Me = Light(PIN_LED_ME);
-Light _Hi = Light(PIN_LED_HI);
-
-#include <U8x8lib.h>
-U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(SCL, SDA, U8X8_PIN_NONE);
+/*
+TFT Display uses a minimum of 3 and upto 6 GPIO pins
+on ESP8266 nodemcu. Here, removed previous display
+elements - OLED and LEDs, which are anyway redundant.
+*/
 
 unsigned long tic = millis();
 
@@ -77,69 +78,49 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
   _signal = _deserializer.deserialize(message2display, length);
-  u8x8.clearDisplay();
-  u8x8.setFont(u8x8_font_pxplusibmcga_f); 
-  u8x8.drawString(0, 0, "FLOOD @ I-55");
+  _tft.fillScreen(TFT_OLIVE);
+  _tft.setCursor(xpos, ypos);
+  _tft.setFreeFont(FSBI12);
+  _tft.println();
+  _tft.println("Flood @ I-55");
   if (_signal.Hi == 1) {
-    _Hi.set_level(true);
-    _Me.set_level(true);
-    _Lo.set_level(true);
-    _buzz.sound_alarm();
-    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
-    u8x8.drawString(0, 2, "DO NOT");
-    u8x8.drawString(0, 4, "PASS!");
+      _tft.fillScreen(TFT_DARKGREEN);
+      _tft.setFreeFont(FSBI12);
+      _tft.println();
+      _tft.println("Flood @ I-55");
+      _tft.println();
+      _tft.setFreeFont(FSSB24);
+      _tft.println();
+      _tft.println("DO NOT PASS!");
   } else if (_signal.Me == 1) {
-    _Hi.set_level(false);
-    _Me.set_level(true);
-    _Lo.set_level(true);
-    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
-    u8x8.drawString(0, 2, "DANGER!");
+      _tft.fillScreen(TFT_ORANGE);
+      _tft.setFreeFont(FSBI12);
+      _tft.println();
+      _tft.println("Flood @ I-55");
+      _tft.println();
+      _tft.setFreeFont(FSSB24);
+      _tft.println();
+      _tft.println("DANGER!");
   } else if (_signal.Lo == 1) {
-    _Hi.set_level(false);
-    _Me.set_level(false);
-    _Lo.set_level(true);
-    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
-    u8x8.drawString(0, 2, "CAUTION!");
+      _tft.fillScreen(TFT_GOLD);
+      _tft.setFreeFont(FSBI12);
+      _tft.println();
+      _tft.println("Flood @ I-55");
+      _tft.println();
+      _tft.setFreeFont(FSSB24);
+      _tft.println();
+      _tft.println("CAUTION!");
   } else {
-    _Hi.set_level(false);
-    _Me.set_level(false);
-    _Lo.set_level(false);
-    u8x8.setFont(u8x8_font_lucasarts_scumm_subtitle_o_2x2_f);
-    u8x8.drawString(0, 2, "ALL");
-    u8x8.drawString(0, 4, "OKAY!");
+      _tft.fillScreen(TFT_OLIVE);
+      _tft.setFreeFont(FSBI12);
+      _tft.println();
+      _tft.println("Flood @ I-55");
+      _tft.println();
+      _tft.setFreeFont(FSSB24);
+      _tft.println();
+      _tft.println("ALL OKAY!");
   }
 }
-
-/*
-String make_message() {
- // Levels
- isLevelLo = _signal.Lo; 
- isLevelMe = _signal.Me; 
- isLevelHi = _signal.Hi;
-
- char levelLo2display[2];
- char levelMe2display[2];
- char levelHi2display[2];
-
- dtostrf((isLevelLo * 1.0), 1, 0, levelLo2display);
- dtostrf((isLevelMe * 1.0), 1, 0, levelMe2display);
- dtostrf((isLevelHi * 1.0), 1, 0, levelHi2display);
-
- // Pack up!
- char readout[25]; // 22
- snprintf(readout, 25, "{\"Lo\":%s,\"Me\":%s,\"Hi\":%s}", levelLo2display, levelMe2display, levelHi2display);
- return readout;
-}
-
-void publish_message() {
-  String msg_payload =  make_message(); // "Namaste from ESP";
-  Serial.print("Payload: ");
-  Serial.println(msg_payload);
-  char char_buffer[128];
-  msg_payload.toCharArray(char_buffer, 128);
-  MQTTClient.publish("FLL", char_buffer);
-}
-*/
 
 void reconnect() {
   // Loop until we’re reconnected
@@ -171,9 +152,6 @@ void setup() {
     // Stabilize the serial bus
   }
   delay(600);
-  u8x8.begin();
-  u8x8.setFont(u8x8_font_7x14B_1x2_f);
-  u8x8.drawString(0, 0, "OLED OKAY!");  
 
   // Connect to WiFi:
   WiFi.mode(WIFI_OFF);
@@ -194,11 +172,15 @@ void setup() {
   MQTTClient.setServer(HiveMQX, 8883);  // MQTT_IP, 1883 or HiveNQ, 1883
   MQTTClient.setCallback(onmessage);    
 
-  pinMode(LED, OUTPUT);
-  Serial.println("Switching LED for 1 sec.");
-  _Hi.set_level(false);
-  _Me.set_level(false);
-  _Lo.set_level(false);
+  // TFT:
+  _tft.init();
+  _tft.setRotation(rotatn);
+  _tft.fillScreen(TFT_DARKGREEN);
+  _tft.fillScreen(TFT_OLIVE);
+  _tft.setCursor(xpos, ypos);
+  _tft.setFreeFont(FSBI12);
+  _tft.println();
+  _tft.println("TFT READY!");
 }
 
 void loop() {
