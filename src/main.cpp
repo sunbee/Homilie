@@ -12,7 +12,7 @@
 
 BearSSL::CertStore certStore;
 
-String name="FLLREC";
+String name="FLLTFT";
 
 int LED = 16;
 
@@ -26,7 +26,7 @@ Deserializer _deserializer = Deserializer();
 
 TFT_eSPI _tft = TFT_eSPI();
 #define TFT_GREY 0x5AEB;
-int rotatn = 0;
+int rotatn = 1;
 int xpos = 0;
 int ypos = 40;
 
@@ -78,46 +78,41 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
   _signal = _deserializer.deserialize(message2display, length);
-  _tft.fillScreen(TFT_OLIVE);
-  _tft.setCursor(xpos, ypos);
-  _tft.setFreeFont(FSBI12);
-  _tft.println();
-  _tft.println("Flood @ I-55");
   if (_signal.Hi == 1) {
       _tft.fillScreen(TFT_DARKGREEN);
+      _tft.setCursor(xpos, ypos);
       _tft.setFreeFont(FSBI12);
       _tft.println();
       _tft.println("Flood @ I-55");
       _tft.println();
       _tft.setFreeFont(FSSB24);
-      _tft.println();
       _tft.println("DO NOT PASS!");
   } else if (_signal.Me == 1) {
       _tft.fillScreen(TFT_ORANGE);
+      _tft.setCursor(xpos, ypos);
       _tft.setFreeFont(FSBI12);
       _tft.println();
       _tft.println("Flood @ I-55");
       _tft.println();
       _tft.setFreeFont(FSSB24);
-      _tft.println();
       _tft.println("DANGER!");
   } else if (_signal.Lo == 1) {
       _tft.fillScreen(TFT_GOLD);
+      _tft.setCursor(xpos, ypos);
       _tft.setFreeFont(FSBI12);
       _tft.println();
       _tft.println("Flood @ I-55");
       _tft.println();
       _tft.setFreeFont(FSSB24);
-      _tft.println();
       _tft.println("CAUTION!");
   } else {
       _tft.fillScreen(TFT_OLIVE);
+      _tft.setCursor(xpos, ypos);
       _tft.setFreeFont(FSBI12);
       _tft.println();
       _tft.println("Flood @ I-55");
       _tft.println();
       _tft.setFreeFont(FSSB24);
-      _tft.println();
       _tft.println("ALL OKAY!");
   }
 }
@@ -126,7 +121,7 @@ void reconnect() {
   // Loop until we’re reconnected
   while (!MQTTClient.connected()) {
     Serial.print("Attempting MQTT connection .. ");
-    String clientID = "FLLREC";
+    String clientID = "FLLTFT";
     // Attempt to connect
     // Insert your password
     if (MQTTClient.connect(clientID.c_str(), HIVE_USERID, HIVE_PASSWD)) {
