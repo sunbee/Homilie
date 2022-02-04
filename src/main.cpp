@@ -79,14 +79,15 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
   Serial.println();
   _signal = _deserializer.deserialize(message2display, length);
   if (_signal.Hi == 1) {
-      _tft.fillScreen(TFT_DARKGREEN);
+      _tft.fillScreen(TFT_RED);
       _tft.setCursor(xpos, ypos);
       _tft.setFreeFont(FSBI12);
       _tft.println();
       _tft.println("Flood @ I-55");
       _tft.println();
       _tft.setFreeFont(FSSB24);
-      _tft.println("DO NOT PASS!");
+      _tft.println("DO NOT");
+      _tft.println("PASS!");
   } else if (_signal.Me == 1) {
       _tft.fillScreen(TFT_ORANGE);
       _tft.setCursor(xpos, ypos);
@@ -106,7 +107,7 @@ void onmessage(char* topic, byte* payload, unsigned int length) {
       _tft.setFreeFont(FSSB24);
       _tft.println("CAUTION!");
   } else {
-      _tft.fillScreen(TFT_OLIVE);
+      _tft.fillScreen(TFT_DARKGREEN);
       _tft.setCursor(xpos, ypos);
       _tft.setFreeFont(FSBI12);
       _tft.println();
